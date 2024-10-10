@@ -10,7 +10,11 @@ from open_webui.apps.webui.models.documents import (
 from open_webui.constants import ERROR_MESSAGES
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-from open_webui.utils.utils import get_admin_user, get_verified_user
+from open_webui.utils.utils import (
+    get_admin_user,
+    get_verified_user,
+    get_admin_or_content_admin_user,
+)
 
 from utils.utils import get_verified_user, get_admin_or_content_admin_user
 from constants import ERROR_MESSAGES
