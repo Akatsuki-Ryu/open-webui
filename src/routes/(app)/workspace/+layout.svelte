@@ -17,8 +17,8 @@
 		}
 
 		// If the user is a content admin, restrict access to only the Documents page
-		if ($user?.role === 'content admin' && !$page.url.pathname.includes('/workspace/documents')) {
-			await goto('/workspace/documents');
+		if ($user?.role === 'content admin' && !$page.url.pathname.includes('/workspace/knowledge')) {
+			await goto('/workspace/knowledge');
 		}
 
 		loaded = true;
