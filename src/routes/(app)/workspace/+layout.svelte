@@ -61,25 +61,36 @@
 			<div
 				class="flex scrollbar-none overflow-x-auto w-fit text-center text-sm font-medium rounded-xl bg-transparent/10 p-1"
 			>
-				{#if $user?.role === 'admin'}
+
+				<!-- This section is visible to both 'admin' and 'content admin' -->
+				{#if $user?.role === 'admin' || $user?.role === 'content admin'}
 					<a
 						class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes('/workspace/models')
 							? 'bg-gray-50 dark:bg-gray-850'
 							: ''} transition"
 						href="/workspace/models">{$i18n.t('Models')}</a
 					>
+				{/if}
 
-				<a
-					class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes(
+				<!-- This section is only visible to 'admin' -->
+				{#if $user?.role === 'admin'}
+
+					<a
+						class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes(
 						'/workspace/knowledge'
 					)
 						? 'bg-gray-50 dark:bg-gray-850'
 						: ''} transition"
-					href="/workspace/knowledge"
-				>
-					{$i18n.t('Knowledge')}
-				</a>
-
+						href="/workspace/knowledge"
+					>
+						{$i18n.t('Knowledge')}
+					</a>
+					<a
+						class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes('/workspace/prompts')
+						? 'bg-gray-50 dark:bg-gray-850'
+						: ''} transition"
+						href="/workspace/prompts">{$i18n.t('Prompts')}</a
+					>
 					<a
 						class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes('/workspace/tools')
 							? 'bg-gray-50 dark:bg-gray-850'
@@ -93,35 +104,10 @@
 							: ''} transition"
 						href="/workspace/functions">{$i18n.t('Functions')}</a
 					>
+
 				{/if}
 
-				<!-- This section is visible to both 'admin' and 'content admin' -->
-				<a
-					class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes('/workspace/prompts')
-						? 'bg-gray-50 dark:bg-gray-850'
-						: ''} transition"
-					href="/workspace/prompts">{$i18n.t('Prompts')}</a
-				>
 
-				<a
-					class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes('/workspace/tools')
-						? 'bg-gray-50 dark:bg-gray-850'
-						: ''} transition"
-					href="/workspace/tools"
-				>
-					{$i18n.t('Tools')}
-				</a>
-
-				<a
-					class="min-w-fit rounded-lg p-1.5 px-3 {$page.url.pathname.includes(
-						'/workspace/functions'
-					)
-						? 'bg-gray-50 dark:bg-gray-850'
-						: ''} transition"
-					href="/workspace/functions"
-				>
-					{$i18n.t('Functions')}
-				</a>
 			</div>
 		</div>
 
