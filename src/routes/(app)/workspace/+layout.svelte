@@ -16,9 +16,9 @@
 			await goto('/');
 		}
 
-		// If the user is a content admin, restrict access to only the Documents page
-		if ($user?.role === 'content admin' && !$page.url.pathname.includes('/workspace/knowledge')) {
-			await goto('/workspace/knowledge');
+		// If the user is a content admin, restrict access to only the models page
+		if ($user?.role === 'content admin' && !$page.url.pathname.includes('/workspace/models')) {
+			await goto('/workspace/models');
 		}
 
 		loaded = true;
