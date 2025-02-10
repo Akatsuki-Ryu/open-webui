@@ -116,6 +116,25 @@
 		}
 	};
 
+	const importToolHandler = async (toolData) => {
+		try {
+			if (toolData) {
+				const res = await createNewTool(localStorage.token, toolData).catch((error) => {
+					toast.error(`${error}`);
+					return null;
+				});
+
+				if (res) {
+					toast.success($i18n.t('Tool imported successfully'));
+					await init();
+				}
+			}
+		} catch (error) {
+			toast.error($i18n.t('Failed to import tool: Invalid tool data'));
+			console.error(error);
+		}
+	};
+
 	const deleteHandler = async (tool) => {
 		const res = await deleteToolById(localStorage.token, tool.id).catch((error) => {
 			toast.error(`${error}`);
@@ -374,6 +393,40 @@
 					}}
 				/>
 
+				<input
+					id="single-tool-import-input"
+					type="file"
+					accept=".json"
+					hidden
+					on:change={(e) => {
+						const file = e.target.files?.[0];
+						if (!file) return;
+
+						let reader = new FileReader();
+						reader.onload = async (event) => {
+							try {
+								let savedTool = JSON.parse(event.target.result);
+								console.log('Imported tool data:', savedTool);
+
+								// Validate it's a single tool export
+								if (Array.isArray(savedTool) && savedTool.length === 1) {
+									await importToolHandler(savedTool[0]);
+								} else {
+									toast.error($i18n.t('Invalid file: Please use a file exported from tool menu'));
+								}
+							} catch (error) {
+								toast.error($i18n.t('Failed to import tool: Invalid file format'));
+								console.error(error);
+							}
+
+							// Clear the input
+							e.target.value = '';
+						};
+
+						reader.readAsText(file);
+					}}
+				/>
+
 				<button
 					class="flex text-xs items-center space-x-1 px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 transition"
 					on:click={() => {
@@ -387,7 +440,32 @@
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 16 16"
 							fill="currentColor"
-							class="w-4 h-4"
+							class="w-3.5 h-3.5"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4Zm4 9.5a.75.75 0 0 1-.75-.75V8.06l-.72.72a.75.75 0 0 1-1.06-1.06l2-2a.75.75 0 0 1 1.06 0l2 2a.75.75 0 1 1-1.06 1.06l-.72-.72v2.69a.75.75 0 0 1-.75.75Z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+					</div>
+				</button>
+
+				<button
+					class="flex text-xs items-center space-x-1 px-3 py-1.5 rounded-xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200 transition"
+					on:click={() => {
+						const input = document.getElementById('single-tool-import-input');
+						input?.click();
+					}}
+				>
+					<div class=" self-center mr-2 font-medium line-clamp-1">{$i18n.t('Import Tool')}</div>
+
+					<div class=" self-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 16 16"
+							fill="currentColor"
+							class="w-3.5 h-3.5"
 						>
 							<path
 								fill-rule="evenodd"
