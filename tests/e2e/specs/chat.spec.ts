@@ -18,7 +18,7 @@ test.describe('Chat', () => {
 
 	test('user can perform text chat', async ({ page }) => {
 		await chatPage.selectModel('gpt-5-nano');
-		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
+		await chatPage.sendMessage('Tell me about water in one sentence.');
 
 		// Verify that the message was sent and user message appears
 		await chatPage.waitForUserMessage();
@@ -26,8 +26,8 @@ test.describe('Chat', () => {
 		// Wait for assistant response to complete
 		await chatPage.waitForAssistantResponse();
 
-		// Verify that the assistant response contains valid text content
-		await chatPage.verifyAssistantResponseHasText();
+		// Verify that the assistant response contains the keyword "water"
+		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 
 	test('user can share chat', async ({ page }) => {
@@ -71,7 +71,8 @@ test.describe('Chat', () => {
 		// Wait for assistant response to complete
 		await chatPage.waitForAssistantResponse();
 
-		// Verify that the assistant response contains "water" or at least indicates PDF processing occurred
+		// Verify that the assistant response contains the keyword "water"
+		// The waitForAssistantResponse method ensures we've waited past "retrieved X source" for actual content
 		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 });
