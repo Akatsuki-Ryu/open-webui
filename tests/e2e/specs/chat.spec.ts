@@ -1,6 +1,5 @@
 import { test } from '../setup/fixtures';
 import { ChatPage } from '../setup/pages/ChatPage';
-import { writeFileSync } from 'fs';
 
 test.describe('Chat', () => {
 	let chatPage: ChatPage;
@@ -57,21 +56,14 @@ test.describe('Chat', () => {
 	test('user can upload a PDF file and ask questions about it', async ({ page }) => {
 		await chatPage.selectModel('gpt-5-nano');
 
-		// Create a simple test text file for upload testing
-		const testFilePath = '/tmp/test-document.txt';
+		// Use the existing sample PDF file for testing
+		const pdfFilePath = 'tests/e2e/resources/sample-document.pdf';
 
-		// Create test file content
-		const fileContent =
-			'This is a test document. It contains information about artificial intelligence and machine learning. The document discusses various topics including neural networks, deep learning, and natural language processing.';
+		// Upload the PDF file
+		await chatPage.uploadFile(pdfFilePath);
 
-		// Write file to filesystem
-		writeFileSync(testFilePath, fileContent);
-
-		// Upload the file
-		await chatPage.uploadFile(testFilePath);
-
-		// Ask a question about the uploaded file
-		await chatPage.sendMessage('What topics does this document discuss?');
+		// Ask a question about the uploaded PDF that should elicit a response containing "water"
+		await chatPage.sendMessage('What does this document say about?');
 
 		// Verify that the message was sent and user message appears
 		await chatPage.waitForUserMessage();
@@ -79,7 +71,7 @@ test.describe('Chat', () => {
 		// Wait for assistant response to complete
 		await chatPage.waitForAssistantResponse();
 
-		// Verify that the assistant response contains valid text content
-		await chatPage.verifyAssistantResponseHasText();
+		// Verify that the assistant response contains "water" or at least indicates PDF processing occurred
+		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 });

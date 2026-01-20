@@ -75,13 +75,13 @@ export class ChatPage {
 		await expect(this.page.locator('.chat-user')).toBeVisible();
 	}
 
-	async waitForAssistantResponse(timeout: number = 30000) {
+	async waitForAssistantResponse(timeout: number = 50000) {
 		// Wait for assistant response to appear
 		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
 
 		// In test environment, just wait a reasonable time for response to start
 		// The actual AI response may not complete due to backend configuration
-		await this.page.waitForTimeout(5000);
+		await this.page.waitForTimeout(50000);
 	}
 
 	async verifyAssistantResponseHasText() {
@@ -91,6 +91,17 @@ export class ChatPage {
 
 		// In test environment, we just verify the response area appeared
 		// Actual content verification would require a working AI backend
+	}
+
+	async verifyAssistantResponseContainsKeyword(keyword: string) {
+		// Verify that the assistant response contains the specified keyword
+		const assistantResponse = this.page.locator('.chat-assistant').last();
+		const responseText = await assistantResponse.textContent();
+		const trimmedText = responseText?.trim() || '';
+
+		// Strictly require the keyword to be present in the response
+		// If the keyword is not found, the test should fail
+		expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
 	}
 
 	async shareChat() {
