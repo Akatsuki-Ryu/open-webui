@@ -314,3 +314,4 @@ cypress/screenshots
 
 # playwright artifacts
 test-results/
+playwright-report/
