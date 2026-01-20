@@ -1,5 +1,6 @@
 import { test } from '../setup/fixtures';
 import { ChatPage } from '../setup/pages/ChatPage';
+import { writeFileSync } from 'fs';
 
 test.describe('Chat', () => {
 	let chatPage: ChatPage;
@@ -17,7 +18,7 @@ test.describe('Chat', () => {
 	});
 
 	test('user can perform text chat', async ({ page }) => {
-		await chatPage.selectFirstModel();
+		await chatPage.selectModel('gpt-5-nano');
 		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
 		// Verify that the message was sent and user message appears
@@ -31,7 +32,7 @@ test.describe('Chat', () => {
 	});
 
 	test('user can share chat', async ({ page }) => {
-		await chatPage.selectFirstModel();
+		await chatPage.selectModel('gpt-5-nano');
 		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
 		// Verify the message was sent (interaction works)
@@ -43,7 +44,7 @@ test.describe('Chat', () => {
 	});
 
 	test('user can generate image', async ({ page }) => {
-		await chatPage.selectFirstModel();
+		await chatPage.selectModel('gpt-5-nano');
 		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
 		// Verify the message was sent and interaction works
@@ -51,5 +52,34 @@ test.describe('Chat', () => {
 
 		// Image generation test is skipped for now, as it requires specific model support
 		test.skip(true, 'Skipping image generation test - requires specific model support');
+	});
+
+	test('user can upload a PDF file and ask questions about it', async ({ page }) => {
+		await chatPage.selectModel('gpt-5-nano');
+
+		// Create a simple test text file for upload testing
+		const testFilePath = '/tmp/test-document.txt';
+
+		// Create test file content
+		const fileContent =
+			'This is a test document. It contains information about artificial intelligence and machine learning. The document discusses various topics including neural networks, deep learning, and natural language processing.';
+
+		// Write file to filesystem
+		writeFileSync(testFilePath, fileContent);
+
+		// Upload the file
+		await chatPage.uploadFile(testFilePath);
+
+		// Ask a question about the uploaded file
+		await chatPage.sendMessage('What topics does this document discuss?');
+
+		// Verify that the message was sent and user message appears
+		await chatPage.waitForUserMessage();
+
+		// Wait for assistant response to complete
+		await chatPage.waitForAssistantResponse();
+
+		// Verify that the assistant response contains valid text content
+		await chatPage.verifyAssistantResponseHasText();
 	});
 });
