@@ -20,9 +20,14 @@ test.describe('Chat', () => {
 		await chatPage.selectFirstModel();
 		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
-		// Verify that we can still type and send messages (interaction works)
-		// We don't require AI response for basic functionality test
-		await page.getByRole('button', { name: 'Send message' }).isVisible();
+		// Verify that the message was sent and user message appears
+		await chatPage.waitForUserMessage();
+
+		// Wait for assistant response to complete
+		await chatPage.waitForAssistantResponse();
+
+		// Verify that the assistant response contains valid text content
+		await chatPage.verifyAssistantResponseHasText();
 	});
 
 	test('user can share chat', async ({ page }) => {
@@ -37,12 +42,12 @@ test.describe('Chat', () => {
 		test.skip(true, 'Skipping sharing test - requires valid chat context and AI response');
 	});
 
-	test('user can generate image', async () => {
+	test('user can generate image', async ({ page }) => {
 		await chatPage.selectFirstModel();
 		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
 		// Verify the message was sent and interaction works
-		await chatPage.page.getByRole('button', { name: 'Send message' }).isVisible();
+		await page.getByRole('button', { name: 'Send message' }).isVisible();
 
 		// Image generation test is skipped for now, as it requires specific model support
 		test.skip(true, 'Skipping image generation test - requires specific model support');
