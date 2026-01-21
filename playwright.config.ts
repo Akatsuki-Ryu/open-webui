@@ -51,11 +51,7 @@ export default defineConfig({
 			name: 'ai-tail-test',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://aihubi.tail22dc1.ts.net',
-				httpCredentials: {
-					username: process.env.AI_TAIL_USERNAME!,
-					password: process.env.AI_TAIL_PASSWORD!
-				}
+				baseURL: 'https://aihubi.tail22dc1.ts.net'
 			}
 		},
 
@@ -63,11 +59,7 @@ export default defineConfig({
 			name: 'instance1',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://instance1.example.com',
-				httpCredentials: {
-					username: process.env.INSTANCE1_USERNAME!,
-					password: process.env.INSTANCE1_PASSWORD!
-				}
+				baseURL: 'https://instance1.example.com'
 			}
 		},
 
@@ -75,11 +67,7 @@ export default defineConfig({
 			name: 'instance2',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://instance2.example.com',
-				httpCredentials: {
-					username: process.env.INSTANCE2_USERNAME!,
-					password: process.env.INSTANCE2_PASSWORD!
-				}
+				baseURL: 'https://instance2.example.com'
 			}
 		},
 
@@ -87,11 +75,7 @@ export default defineConfig({
 			name: 'instance3',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://instance3.example.com',
-				httpCredentials: {
-					username: process.env.INSTANCE3_USERNAME!,
-					password: process.env.INSTANCE3_PASSWORD!
-				}
+				baseURL: 'https://instance3.example.com'
 			}
 		}
 	],
