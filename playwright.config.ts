@@ -45,6 +45,38 @@ export default defineConfig({
 		{
 			name: 'Mobile Chrome',
 			use: { ...devices['Pixel 5'] }
+		},
+
+		{
+			name: 'ai-tail-test',
+			use: { ...devices['Desktop Chrome'], baseURL: 'https://aihubi.tail22dc1.ts.net' }
+		},
+
+		{
+			name: 'instance1',
+			use: {
+				...devices['Desktop Chrome'],
+				baseURL: 'https://instance1.example.com',
+				httpCredentials: { username: 'placeholder_user1', password: 'placeholder_pass1' }
+			}
+		},
+
+		{
+			name: 'instance2',
+			use: {
+				...devices['Desktop Chrome'],
+				baseURL: 'https://instance2.example.com',
+				httpCredentials: { username: 'placeholder_user2', password: 'placeholder_pass2' }
+			}
+		},
+
+		{
+			name: 'instance3',
+			use: {
+				...devices['Desktop Chrome'],
+				baseURL: 'https://instance3.example.com',
+				httpCredentials: { username: 'placeholder_user3', password: 'placeholder_pass3' }
+			}
 		}
 	],
 
