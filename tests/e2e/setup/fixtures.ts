@@ -4,7 +4,7 @@ import { test as base, expect } from '@playwright/test';
 export const adminUser = {
 	name: 'akabox',
 	email: 'aka@aka.com',
-	password: 'qwer1234'
+	password: process.env.ADMIN_PASSWORD || 'qwer1234'
 };
 
 // Page Object Model for Authentication
@@ -95,8 +95,31 @@ export const test = base.extend<AuthFixtures>({
 		const context = await browser.newContext();
 		const page = await context.newPage();
 
+		// Determine baseURL by navigating to root
+		await page.goto('/');
+		const currentURL = page.url();
+		const baseURL = new URL(currentURL).origin;
+
+		// Set credentials based on baseURL
+		let username = 'aka@aka.com';
+		let password = process.env.ADMIN_PASSWORD || 'qwer1234';
+
+		if (baseURL === 'https://aihubi.tail22dc1.ts.net') {
+			username = process.env.AI_TAIL_USERNAME || 'aka@aka.com';
+			password = process.env.AI_TAIL_PASSWORD || 'Ob3a4unnKAGvC6';
+		} else if (baseURL === 'https://instance1.example.com') {
+			username = process.env.INSTANCE1_USERNAME || 'placeholder_user1';
+			password = process.env.INSTANCE1_PASSWORD || 'placeholder_pass1';
+		} else if (baseURL === 'https://instance2.example.com') {
+			username = process.env.INSTANCE2_USERNAME || 'placeholder_user2';
+			password = process.env.INSTANCE2_PASSWORD || 'placeholder_pass2';
+		} else if (baseURL === 'https://instance3.example.com') {
+			username = process.env.INSTANCE3_USERNAME || 'placeholder_user3';
+			password = process.env.INSTANCE3_PASSWORD || 'placeholder_pass3';
+		}
+
 		const authPage = new AuthPage(page);
-		await authPage.login(adminUser.email, adminUser.password);
+		await authPage.login(username, password);
 
 		await use(page);
 
