@@ -137,16 +137,9 @@ export class ChatPage {
 		const responseText = await assistantResponse.textContent();
 		const trimmedText = responseText?.trim() || '';
 
-		// For file upload tests, accept either:
-		// 1. Full content with the keyword, OR
-		// 2. Just the retrieval message (indicating upload/retrieval worked)
-		if (trimmedText.match(/^retrieved \d+ (source|resource)/i)) {
-			// Retrieval occurred - test passes for file upload functionality
-			expect(trimmedText.toLowerCase()).toMatch(/retrieved \d+ (source|resource)/i);
-		} else {
-			// Full content available - check for the specific keyword
-			expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
-		}
+		// Always require the specific keyword to be present in the response
+		// For file upload tests, this ensures the document content was properly retrieved and included
+		expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
 	}
 
 	async shareChat() {

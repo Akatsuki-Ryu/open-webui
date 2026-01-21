@@ -75,7 +75,7 @@ test.describe('Chat', () => {
 
 		// Verify that the assistant response contains the keyword "water"
 		// The waitForAssistantResponse method ensures we've waited past "retrieved X source" for actual content
-		await chatPage.verifyAssistantResponseContainsKeyword('dog');
+		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 
 	test('user can upload a TXT file and ask questions about it', async ({ page }) => {
@@ -100,6 +100,6 @@ test.describe('Chat', () => {
 
 		// Verify that the assistant response contains the keyword "water"
 		// The waitForAssistantResponse method ensures we've waited past "retrieved X source" for actual content
-		await chatPage.verifyAssistantResponseContainsKeyword('dog');
+		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 });
