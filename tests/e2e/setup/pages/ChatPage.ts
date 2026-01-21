@@ -79,35 +79,38 @@ export class ChatPage {
 		// Wait for assistant response to appear
 		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
 
-		// Wait for assistant response to have meaningful text content
+		// Wait for assistant response to have meaningful text content and be complete
 		const assistantResponse = this.page.locator('.chat-assistant').last();
 		const startTime = Date.now();
-		let foundRetrievalMessage = false;
 		let retrievalMessageTime = 0;
 
 		while (Date.now() - startTime < timeout) {
 			const textContent = await assistantResponse.textContent();
 			const trimmed = textContent?.trim() || '';
 
-			// Phase 1: Check if we see "retrieved X source/resources" message
-			if (trimmed.match(/retrieved \d+ (source|resource)/i)) {
-				if (!foundRetrievalMessage) {
-					foundRetrievalMessage = true;
-					retrievalMessageTime = Date.now();
-				}
-			}
+			// Check if we see "retrieved X source/resources" message
+			const hasRetrievalMessage = trimmed.match(/retrieved \d+ (source|resource)/i);
 
-			// Phase 2: If we found retrieval message, wait up to 10 seconds for additional content
-			// For regular chat, accept any meaningful content
 			if (trimmed.length > 0) {
-				if (!foundRetrievalMessage) {
-					// Regular chat response - accept any content
-					break;
-				} else if (foundRetrievalMessage && !trimmed.match(/^retrieved \d+ (source|resource)/i)) {
-					// Knowledge query - we have content beyond just the retrieval message
-					break;
-				} else if (foundRetrievalMessage && Date.now() - retrievalMessageTime > 10000) {
-					// Knowledge query - waited 10 seconds after retrieval message, accept current state
+				if (hasRetrievalMessage) {
+					// Found retrieval message - record the time and wait for additional content
+					if (retrievalMessageTime === 0) {
+						retrievalMessageTime = Date.now();
+					}
+
+					// Wait at least 3 seconds after retrieval message to allow content to load
+					if (Date.now() - retrievalMessageTime > 3000) {
+						// Check if we have content beyond just the retrieval message
+						const contentBeyondRetrieval = trimmed
+							.replace(/^retrieved \d+ (source|resource)/i, '')
+							.trim();
+						if (contentBeyondRetrieval.length > 10) {
+							// We have substantial content beyond the retrieval message
+							break;
+						}
+					}
+				} else {
+					// Regular chat response without retrieval message - accept any meaningful content
 					break;
 				}
 			}
@@ -134,13 +137,14 @@ export class ChatPage {
 		const responseText = await assistantResponse.textContent();
 		const trimmedText = responseText?.trim() || '';
 
-		// For knowledge queries, if we only have "retrieved X source", that's acceptable
-		// For regular queries, require the specific keyword
+		// For file upload tests, accept either:
+		// 1. Full content with the keyword, OR
+		// 2. Just the retrieval message (indicating upload/retrieval worked)
 		if (trimmedText.match(/^retrieved \d+ (source|resource)/i)) {
-			// Knowledge query - just verify retrieval occurred
+			// Retrieval occurred - test passes for file upload functionality
 			expect(trimmedText.toLowerCase()).toMatch(/retrieved \d+ (source|resource)/i);
 		} else {
-			// Regular query - require the specific keyword
+			// Full content available - check for the specific keyword
 			expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
 		}
 	}
