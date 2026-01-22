@@ -12,7 +12,7 @@ export class ChatPage {
 		await this.selectModel('gpt-5-nano');
 	}
 
-	async selectModel(modelName: string) {
+	async selectModel(modelName: string, failIfNotFound = false) {
 		// Click on the model selector
 		await this.page.getByRole('button', { name: 'Select a model' }).click();
 
@@ -32,6 +32,9 @@ export class ChatPage {
 		try {
 			await targetItem.first().waitFor({ timeout: 15000 });
 		} catch (e) {
+			if (failIfNotFound) {
+				throw new Error(`Model "${modelName}" not found after timeout`);
+			}
 			console.warn(`Model "${modelName}" not found after timeout - continuing test`);
 			// Fallback to selecting first available model
 			const firstItem = this.page.locator('button[data-value]').first();
@@ -191,5 +194,10 @@ export class ChatPage {
 
 	async getGenerationInfo() {
 		return this.page.getByRole('region', { name: 'Generation Info' });
+	}
+
+	async verifyImageInResponse() {
+		const image = this.page.locator('.chat-assistant img[data-cy="image"]').last();
+		await expect(image).toBeVisible({ timeout: 60000 });
 	}
 }
