@@ -59,10 +59,10 @@ export default defineConfig({
 		},
 
 		{
-			name: 'akabox',
+			name: 'akaboxdot',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://akabox.tail22dc1.ts.net'
+				baseURL: 'https://akabox.open-webui.dgstage.se'
 			},
 			workers: 1
 		},
