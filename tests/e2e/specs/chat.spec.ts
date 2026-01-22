@@ -53,13 +53,7 @@ test.describe('Chat', () => {
 	// 	test.skip(true, 'Skipping image generation test - requires specific model support');
 	// });
 
-	test('user can generate image with Replicate Flux Pipeline', async ({ page }) => {
-		await chatPage.selectModel('Replicate Flux Pipeline', true);
-		await chatPage.sendMessage('Generate an image of a beautiful sunset over mountains');
-		await chatPage.waitForUserMessage();
-		await chatPage.waitForAssistantResponse();
-		await chatPage.verifyImageInResponse();
-	});
+
 
 	test('user can chat with anthropic/claude-3-haiku', async ({ page }) => {
 		await chatPage.selectModel('anthropic/claude-3-haiku', true);
@@ -67,6 +61,31 @@ test.describe('Chat', () => {
 		await chatPage.waitForUserMessage();
 		await chatPage.waitForAssistantResponse();
 		await chatPage.verifyAssistantResponseContainsKeyword('Paris');
+	});
+
+	test('user can upload a TXT file and ask questions about it', async ({ page }) => {
+		test.setTimeout(120000); // Increase timeout to 2 minutes for file upload test
+
+		await chatPage.selectModel('gpt-5-nano');
+
+		// Use the sample TXT file for testing
+		const txtFilePath = 'tests/e2e/resources/sample-document.txt';
+
+		// Upload the TXT file
+		await chatPage.uploadFile(txtFilePath);
+
+		// Ask a question about the uploaded TXT file that should elicit a response containing "water"
+		await chatPage.sendMessage('What does this document say about water?');
+
+		// Verify that the message was sent and user message appears
+		await chatPage.waitForUserMessage();
+
+		// Wait for assistant response to complete
+		await chatPage.waitForAssistantResponse();
+
+		// Verify that the assistant response contains the keyword "water"
+		// The waitForAssistantResponse method ensures we've waited past "retrieved X source" for actual content
+		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 
 	test('user can upload a PDF file and ask questions about it', async ({ page }) => {
@@ -94,28 +113,13 @@ test.describe('Chat', () => {
 		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 
-	test('user can upload a TXT file and ask questions about it', async ({ page }) => {
-		test.setTimeout(120000); // Increase timeout to 2 minutes for file upload test
 
-		await chatPage.selectModel('gpt-5-nano');
 
-		// Use the sample TXT file for testing
-		const txtFilePath = 'tests/e2e/resources/sample-document.txt';
-
-		// Upload the TXT file
-		await chatPage.uploadFile(txtFilePath);
-
-		// Ask a question about the uploaded TXT file that should elicit a response containing "water"
-		await chatPage.sendMessage('What does this document say about water?');
-
-		// Verify that the message was sent and user message appears
+	test('user can generate image with Replicate Flux Pipeline', async ({ page }) => {
+		await chatPage.selectModel('Replicate Flux Pipeline', true);
+		await chatPage.sendMessage('Generate an image of a beautiful sunset over mountains');
 		await chatPage.waitForUserMessage();
-
-		// Wait for assistant response to complete
 		await chatPage.waitForAssistantResponse();
-
-		// Verify that the assistant response contains the keyword "water"
-		// The waitForAssistantResponse method ensures we've waited past "retrieved X source" for actual content
-		await chatPage.verifyAssistantResponseContainsKeyword('water');
+		await chatPage.verifyImageInResponse();
 	});
 });
