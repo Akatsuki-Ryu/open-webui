@@ -34,57 +34,167 @@ export default defineConfig({
 		video: 'retain-on-failure'
 	},
 
-	/* Configure projects for major browsers */
-	projects: [
-		{
-			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
-			workers: 1
-		},
-
-		/* Test against mobile viewports. */
-		{
-			name: 'Mobile Chrome',
-			use: { ...devices['Pixel 5'] },
-			workers: 1
-		},
-
-		{
-			name: 'aihubi',
-			use: {
-				...devices['Desktop Chrome'],
-				baseURL: 'https://aihubi.tail22dc1.ts.net'
+		/* Configure projects for major browsers */
+		projects: [
+			{
+				name: 'chromium',
+				use: { ...devices['Desktop Chrome'] },
+				workers: 1
 			},
-			workers: 1
-		},
 
-		{
-			name: 'akaboxdot',
-			use: {
-				...devices['Desktop Chrome'],
-				baseURL: 'https://akabox.open-webui.dgstage.se'
+			/* Test against mobile viewports. */
+			{
+				name: 'Mobile Chrome',
+				use: { ...devices['Pixel 5'] },
+				workers: 1
 			},
-			workers: 1
-		},
 
-		{
-			name: 'instance2',
-			use: {
-				...devices['Desktop Chrome'],
-				baseURL: 'https://instance2.example.com'
+			// Environment-specific projects for smoke testing
+			{
+				name: 'localhost',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_LOCALHOST || 'http://cyber24:3000'
+				},
+				workers: 1
 			},
-			workers: 1
-		},
-
-		{
-			name: 'instance3',
-			use: {
-				...devices['Desktop Chrome'],
-				baseURL: 'https://instance3.example.com'
+			{
+				name: 'akabox',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_AKABOX || 'https://ai.tail22dc1.ts.net'
+				},
+				workers: 1
 			},
-			workers: 1
-		}
-	],
+			{
+				name: 'akaboxdot',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_AKABOXDOT || 'https://akabox.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'preprod',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_PREPROD || 'https://preprod.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'axontech',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_AXONTECH || 'https://axontech.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'chat',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_CHAT || 'https://chat.privatestack.ai'
+				},
+				workers: 1
+			},
+			{
+				name: 'dex',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_DEX || 'https://digifi-gpt.digitalist.tools'
+				},
+				workers: 1
+			},
+			{
+				name: 'dotab',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_DOTAB || 'https://gpt.digitalist.tools'
+				},
+				workers: 1
+			},
+			{
+				name: 'granges',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_GRANGES || 'https://granges.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'grow',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_GROW || 'https://grow.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'hsr',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_HSR || 'https://assistent.hsr.se/'
+				},
+				workers: 1
+			},
+			{
+				name: 'northbound',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_NORTHBOUND || 'https://northbound.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'resiliencebot',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_RESILIENCEBOT || 'https://resiliencebot.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'sanda',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_SANDA || 'https://sanda.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'stage',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_STAGE || 'https://sanda.open-webui.dgstage.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'ur',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_UR || 'https://aiportalen.ur.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'ekn',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_EKN || 'https://ai.ekn.se'
+				},
+				workers: 1
+			},
+			{
+				name: 'msb',
+				use: {
+					...devices['Desktop Chrome'],
+					baseURL: process.env.CYPRESS_TEST_URL_MSB || 'https://msb.open-webui.dgstage.se/'
+				},
+				workers: 1
+			}
+		],
 
 	/* Run your local dev server before starting the tests */
 	webServer: {

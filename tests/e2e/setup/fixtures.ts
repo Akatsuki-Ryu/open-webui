@@ -107,9 +107,9 @@ export const test = base.extend<AuthFixtures>({
 		if (baseURL === 'https://aihubi.tail22dc1.ts.net') {
 			username = process.env.AI_TAIL_USERNAME || 'aka@aka.com';
 			password = process.env.AI_TAIL_PASSWORD || 'Ob3a4unnKAGvC6';
-		} else if (baseURL === 'https://instance1.example.com') {
-			username = process.env.INSTANCE1_USERNAME || 'placeholder_user1';
-			password = process.env.INSTANCE1_PASSWORD || 'placeholder_pass1';
+		} else if (baseURL === 'https://akabox.open-webui.dgstage.se') {
+			username = process.env.INSTANCE1_USERNAME || 'admin@digitalist.cloud';
+			password = process.env.INSTANCE1_PASSWORD || 'g99qiml8Ty9vWobG!#8Df@x&';
 		} else if (baseURL === 'https://instance2.example.com') {
 			username = process.env.INSTANCE2_USERNAME || 'placeholder_user2';
 			password = process.env.INSTANCE2_PASSWORD || 'placeholder_pass2';
