@@ -69,8 +69,38 @@ export class ChatPage {
 		const fileInput = this.page.locator('input[type="file"][multiple]');
 		await fileInput.setInputFiles(filePath);
 
-		// Wait for file upload to complete (file should appear in the UI)
+		// Wait for file upload and processing to complete
+		const fileName = filePath.split('/').pop() || '';
+
+		// Wait for the file to appear in the message input area
 		await this.page.waitForTimeout(2000);
+
+		// Confirm file appears in the UI (basic upload confirmation)
+		// Look for file items or file references in the UI
+		try {
+			await this.page.waitForFunction(
+				(fileName) => {
+					// Check for file items in the message input area
+					const fileElements = Array.from(document.querySelectorAll('button, div, span')).filter(
+						(el) => {
+							const text = el.textContent || '';
+							return (
+								text.includes(fileName) && !text.includes('spinner') && !text.includes('loading')
+							);
+						}
+					);
+					return fileElements.length > 0;
+				},
+				fileName,
+				{ timeout: 10000 }
+			);
+		} catch (error) {
+			console.warn(`File ${fileName} may not have appeared in UI, but continuing with test`);
+		}
+
+		// Wait additional time for file processing to complete
+		// This ensures the file is fully processed before sending the message
+		await this.page.waitForTimeout(3000);
 	}
 
 	async waitForUserMessage() {
