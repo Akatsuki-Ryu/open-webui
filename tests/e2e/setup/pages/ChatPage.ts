@@ -79,40 +79,70 @@ export class ChatPage {
 		// Wait for assistant response to appear
 		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
 
-		// Wait for assistant response to have meaningful text content and be complete
+		// Wait for the response to be complete by monitoring content stabilization
+		// Phase 1: Wait for retrieval message to appear and stabilize
+		// Phase 2: Continue waiting for any additional content after retrieval
 		const assistantResponse = this.page.locator('.chat-assistant').last();
 		const startTime = Date.now();
-		let retrievalMessageTime = 0;
+		let lastContentLength = 0;
+		let stableStartTime = 0;
+		let retrievalMessageFound = false;
+		let retrievalStableTime = 0;
 
 		while (Date.now() - startTime < timeout) {
 			const textContent = await assistantResponse.textContent();
 			const trimmed = textContent?.trim() || '';
-
-			// Check if we see "retrieved X source/resources" message
+			const currentLength = trimmed.length;
 			const hasRetrievalMessage = trimmed.match(/retrieved \d+ (source|resource)/i);
 
-			if (trimmed.length > 0) {
-				if (hasRetrievalMessage) {
-					// Found retrieval message - record the time and wait for additional content
-					if (retrievalMessageTime === 0) {
-						retrievalMessageTime = Date.now();
-					}
+			// Phase 1: Wait for retrieval message to appear and stabilize
+			if (hasRetrievalMessage && !retrievalMessageFound) {
+				retrievalMessageFound = true;
+				console.log('Retrieval message detected, waiting for it to stabilize...');
+			}
 
-					// Wait at least 3 seconds after retrieval message to allow content to load
-					if (Date.now() - retrievalMessageTime > 3000) {
-						// Check if we have content beyond just the retrieval message
-						const contentBeyondRetrieval = trimmed
-							.replace(/^retrieved \d+ (source|resource)/i, '')
-							.trim();
-						if (contentBeyondRetrieval.length > 10) {
-							// We have substantial content beyond the retrieval message
+			if (retrievalMessageFound) {
+				// Check if retrieval message has stabilized
+				if (currentLength === lastContentLength) {
+					if (retrievalStableTime === 0) {
+						retrievalStableTime = Date.now();
+						console.log('Retrieval message stabilized, waiting for additional content...');
+					} else if (Date.now() - retrievalStableTime > 2000) {
+						// Retrieval has been stable for 2 seconds, now wait for final completion
+						if (stableStartTime === 0) {
+							stableStartTime = Date.now();
+						} else if (Date.now() - stableStartTime > 3000) {
+							// Content has been stable for 3 seconds after retrieval - likely complete
+							console.log('Response appears complete');
 							break;
 						}
 					}
 				} else {
-					// Regular chat response without retrieval message - accept any meaningful content
-					break;
+					// Content is still changing after retrieval, reset timers
+					retrievalStableTime = 0;
+					stableStartTime = 0;
+					lastContentLength = currentLength;
 				}
+			} else if (currentLength > 0) {
+				// No retrieval message, just wait for regular content stabilization
+				if (currentLength === lastContentLength) {
+					if (stableStartTime === 0) {
+						stableStartTime = Date.now();
+					} else if (Date.now() - stableStartTime > 3000) {
+						// Content has been stable for 3 seconds - likely complete
+						break;
+					}
+				} else {
+					// Content is still changing, reset stable timer
+					stableStartTime = 0;
+					lastContentLength = currentLength;
+				}
+			}
+
+			// Safety check: if we have substantial content and it's been a while, consider it done
+			if (currentLength > 50 && Date.now() - startTime > 15000) {
+				console.log('Safety timeout reached with substantial content');
+				break;
 			}
 
 			await this.page.waitForTimeout(500); // Check every 500ms
@@ -133,12 +163,11 @@ export class ChatPage {
 
 	async verifyAssistantResponseContainsKeyword(keyword: string) {
 		// Verify that the assistant response contains the specified keyword
+		// Since we now wait for true completion (regenerate button appears), we should always check for the keyword
 		const assistantResponse = this.page.locator('.chat-assistant').last();
 		const responseText = await assistantResponse.textContent();
 		const trimmedText = responseText?.trim() || '';
 
-		// Always require the specific keyword to be present in the response
-		// For file upload tests, this ensures the document content was properly retrieved and included
 		expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
 	}
 
