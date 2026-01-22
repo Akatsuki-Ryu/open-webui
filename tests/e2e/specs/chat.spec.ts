@@ -53,8 +53,6 @@ test.describe('Chat', () => {
 	// 	test.skip(true, 'Skipping image generation test - requires specific model support');
 	// });
 
-
-
 	test('user can chat with anthropic/claude-3-haiku', async ({ page }) => {
 		await chatPage.selectModel('anthropic/claude-3-haiku', true);
 		await chatPage.sendMessage('What is the capital of France?');
@@ -113,13 +111,10 @@ test.describe('Chat', () => {
 		await chatPage.verifyAssistantResponseContainsKeyword('water');
 	});
 
-
-
 	test('user can generate image with Replicate Flux Pipeline', async ({ page }) => {
 		await chatPage.selectModel('Replicate Flux Pipeline', true);
 		await chatPage.sendMessage('Generate an image of a beautiful sunset over mountains');
 		await chatPage.waitForUserMessage();
-		await chatPage.waitForAssistantResponse();
-		await chatPage.verifyImageInResponse();
+		await chatPage.waitForImageGeneration();
 	});
 });
