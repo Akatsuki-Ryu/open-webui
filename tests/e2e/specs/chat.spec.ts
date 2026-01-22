@@ -57,8 +57,8 @@ test.describe('Chat', () => {
 		await chatPage.selectModel('anthropic/claude-3-haiku', true);
 		await chatPage.sendMessage('What is the capital of France?');
 		await chatPage.waitForUserMessage();
-		await chatPage.waitForAssistantResponse();
-		await chatPage.verifyAssistantResponseContainsKeyword('Paris');
+		await chatPage.waitForAssistantTextResponse();
+		await chatPage.verifyAssistantTextResponseContainsKeyword('Paris');
 	});
 
 	test('user can upload a TXT file and ask questions about it', async ({ page }) => {
