@@ -42,15 +42,23 @@ test.describe('Chat', () => {
 	// 	test.skip(true, 'Skipping sharing test - requires valid chat context and AI response');
 	// });
 
-	test('user can generate image', async ({ page }) => {
-		await chatPage.selectModel('gpt-5-nano');
-		await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
+	// test('user can generate image', async ({ page }) => {
+	// 	await chatPage.selectModel('gpt-5-nano');
+	// 	await chatPage.sendMessage('Hi, what can you do? A single sentence only please.');
 
-		// Verify the message was sent and interaction works
-		await page.getByRole('button', { name: 'Send message' }).isVisible();
+	// 	// Verify the message was sent and interaction works
+	// 	await page.getByRole('button', { name: 'Send message' }).isVisible();
 
-		// Image generation test is skipped for now, as it requires specific model support
-		test.skip(true, 'Skipping image generation test - requires specific model support');
+	// 	// Image generation test is skipped for now, as it requires specific model support
+	// 	test.skip(true, 'Skipping image generation test - requires specific model support');
+	// });
+
+	test('user can generate image with Replicate Flux Pipeline', async ({ page }) => {
+		await chatPage.selectModel('Replicate Flux Pipeline', true);
+		await chatPage.sendMessage('Generate an image of a beautiful sunset over mountains');
+		await chatPage.waitForUserMessage();
+		await chatPage.waitForAssistantResponse();
+		await chatPage.verifyImageInResponse();
 	});
 
 	test('user can upload a PDF file and ask questions about it', async ({ page }) => {
