@@ -186,6 +186,38 @@ export class ChatPage {
 		// Actual content verification would require a working AI backend
 	}
 
+	async waitForAssistantTextResponse(timeout: number = 60000) {
+		// Simplified waiting for text chat responses (no retrieval logic needed)
+		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
+
+		// Wait for meaningful text content to appear
+		const assistantResponse = this.page.locator('.chat-assistant').last();
+		const startTime = Date.now();
+
+		while (Date.now() - startTime < timeout) {
+			const textContent = await assistantResponse.textContent();
+			const trimmed = textContent?.trim() || '';
+
+			if (trimmed.length > 5) {
+				// Basic check for meaningful content
+				// Wait a bit more for stability
+				await this.page.waitForTimeout(1000);
+				break;
+			}
+
+			await this.page.waitForTimeout(500);
+		}
+	}
+
+	async verifyAssistantTextResponseContainsKeyword(keyword: string) {
+		// Verify that the assistant text response contains the specified keyword
+		const assistantResponse = this.page.locator('.chat-assistant').last();
+		const responseText = await assistantResponse.textContent();
+		const trimmedText = responseText?.trim() || '';
+
+		expect(trimmedText.toLowerCase()).toContain(keyword.toLowerCase());
+	}
+
 	async verifyAssistantResponseContainsKeyword(keyword: string) {
 		// Verify that the assistant response contains the specified keyword
 		// Since we now wait for true completion (regenerate button appears), we should always check for the keyword
