@@ -112,73 +112,65 @@ export class ChatPage {
 		// Wait for assistant response to appear
 		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
 
-		// Wait for the response to be complete by monitoring content stabilization
-		// Phase 1: Wait for retrieval message to appear and stabilize
-		// Phase 2: Continue waiting for any additional content after retrieval
+		// Wait for complete AI response generation including retrieval processing
 		const assistantResponse = this.page.locator('.chat-assistant').last();
 		const startTime = Date.now();
-		let lastContentLength = 0;
-		let stableStartTime = 0;
 		let retrievalMessageFound = false;
-		let retrievalStableTime = 0;
+		let contentAfterRetrievalStarted = false;
+
+		console.log('Waiting for complete AI response including retrieval processing...');
 
 		while (Date.now() - startTime < timeout) {
 			const textContent = await assistantResponse.textContent();
 			const trimmed = textContent?.trim() || '';
-			const currentLength = trimmed.length;
 			const hasRetrievalMessage = trimmed.match(/retrieved \d+ (source|resource)/i);
 
-			// Phase 1: Wait for retrieval message to appear and stabilize
+			// Phase 1: Detect when retrieval message appears
 			if (hasRetrievalMessage && !retrievalMessageFound) {
 				retrievalMessageFound = true;
-				console.log('Retrieval message detected, waiting for it to stabilize...');
+				console.log('Retrieval message detected, waiting for retrieval to complete...');
 			}
 
+			// Phase 2: Once retrieval message is found, wait for content beyond just the retrieval message
 			if (retrievalMessageFound) {
-				// Check if retrieval message has stabilized
-				if (currentLength === lastContentLength) {
-					if (retrievalStableTime === 0) {
-						retrievalStableTime = Date.now();
-						console.log('Retrieval message stabilized, waiting for additional content...');
-					} else if (Date.now() - retrievalStableTime > 2000) {
-						// Retrieval has been stable for 2 seconds, now wait for final completion
-						if (stableStartTime === 0) {
-							stableStartTime = Date.now();
-						} else if (Date.now() - stableStartTime > 3000) {
-							// Content has been stable for 3 seconds after retrieval - likely complete
-							console.log('Response appears complete');
-							break;
-						}
-					}
-				} else {
-					// Content is still changing after retrieval, reset timers
-					retrievalStableTime = 0;
-					stableStartTime = 0;
-					lastContentLength = currentLength;
-				}
-			} else if (currentLength > 0) {
-				// No retrieval message, just wait for regular content stabilization
-				if (currentLength === lastContentLength) {
-					if (stableStartTime === 0) {
-						stableStartTime = Date.now();
-					} else if (Date.now() - stableStartTime > 3000) {
-						// Content has been stable for 3 seconds - likely complete
-						break;
-					}
-				} else {
-					// Content is still changing, reset stable timer
-					stableStartTime = 0;
-					lastContentLength = currentLength;
-				}
-			}
+				const contentAfterRetrieval = trimmed
+					.replace(/^retrieved \d+ (source|resource)/i, '')
+					.trim();
 
-			// Safety check: if we have substantial content and it's been a while, consider it done
-			if (currentLength > 50 && Date.now() - startTime > 15000) {
-				console.log('Safety timeout reached with substantial content');
-				break;
+				if (!contentAfterRetrievalStarted && contentAfterRetrieval.length > 0) {
+					contentAfterRetrievalStarted = true;
+					console.log('Content appearing after retrieval message, waiting for completion...');
+				}
+
+				// If we have substantial content after the retrieval message, consider it complete
+				if (contentAfterRetrievalStarted && contentAfterRetrieval.length > 20) {
+					console.log('Retrieval processing complete, AI response fully generated');
+					break;
+				}
 			}
 
 			await this.page.waitForTimeout(500); // Check every 500ms
+		}
+
+		// Final stabilization check - ensure content doesn't change for a few seconds
+		let lastContent = '';
+		let stableCount = 0;
+
+		for (let i = 0; i < 10; i++) {
+			// Check 10 times over 5 seconds
+			const currentContent = (await assistantResponse.textContent()) || '';
+			if (currentContent === lastContent && currentContent.length > 0) {
+				stableCount++;
+				if (stableCount >= 3) {
+					// Stable for 1.5 seconds
+					console.log('Response fully stabilized');
+					break;
+				}
+			} else {
+				stableCount = 0;
+				lastContent = currentContent;
+			}
+			await this.page.waitForTimeout(500);
 		}
 
 		// Give a small additional delay to ensure the response is fully rendered
