@@ -109,13 +109,57 @@ export const test = base.extend<AuthFixtures>({
 			password = process.env.AI_TAIL_PASSWORD || 'Ob3a4unnKAGvC6';
 		} else if (baseURL === 'https://akabox.open-webui.dgstage.se') {
 			username = process.env.INSTANCE1_USERNAME || 'admin@digitalist.cloud';
-			password = process.env.INSTANCE1_PASSWORD || 'g99qiml8Ty9vWobG!#8Df@x&';
-		} else if (baseURL === 'https://instance2.example.com') {
-			username = process.env.INSTANCE2_USERNAME || 'placeholder_user2';
-			password = process.env.INSTANCE2_PASSWORD || 'placeholder_pass2';
-		} else if (baseURL === 'https://instance3.example.com') {
-			username = process.env.INSTANCE3_USERNAME || 'placeholder_user3';
-			password = process.env.INSTANCE3_PASSWORD || 'placeholder_pass3';
+			password = process.env.INSTANCE1_PASSWORD || 'your_preprod_password';
+		} else if (baseURL === 'https://stage.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_STAGE || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_STAGE || 'your_stage_password';
+		} else if (baseURL === 'https://preprod.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_PREPROD || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_PREPROD || 'your_preprod_password';
+		} else if (baseURL === 'https://axontech.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_AXONTECH || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_AXONTECH || 'your_axontech_password';
+		} else if (baseURL === 'https://chat.privatestack.ai') {
+			username = process.env.CYPRESS_TEST_EMAIL_CHAT || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_CHAT || 'your_chat_password';
+		} else if (baseURL === 'https://digifi-gpt.digitalist.tools') {
+			username = process.env.CYPRESS_TEST_EMAIL_DEX || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_DEX || 'your_dex_password';
+		} else if (baseURL === 'https://gpt.digitalist.tools') {
+			username = process.env.CYPRESS_TEST_EMAIL_DOTAB || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_DOTAB || 'your_dotab_password';
+		} else if (baseURL === 'https://granges.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_GRANGES || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_GRANGES || 'your_granges_password';
+		} else if (baseURL === 'https://grow.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_GROW || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_GROW || 'your_grow_password';
+		} else if (baseURL === 'https://assistent.hsr.se/') {
+			username = process.env.CYPRESS_TEST_EMAIL_HSR || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_HSR || 'your_hsr_password';
+		} else if (baseURL === 'https://northbound.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_NORTHBOUND || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_NORTHBOUND || 'your_northbound_password';
+		} else if (baseURL === 'https://resiliencebot.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_RESILIENCEBOT || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_RESILIENCEBOT || 'your_resiliencebot_password';
+		} else if (baseURL === 'https://sanda.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_SANDA || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_SANDA || 'your_sanda_password';
+		} else if (baseURL === 'https://stage.open-webui.dgstage.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_STAGE || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_STAGE || 'your_stage_password';
+		} else if (baseURL === 'https://aiportalen.ur.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_UR || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_UR || 'your_ur_password';
+		} else if (baseURL === 'https://ai.ekn.se') {
+			username = process.env.CYPRESS_TEST_EMAIL_EKN || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_EKN || 'your_ekn_password';
+		} else if (baseURL === 'https://msb.open-webui.dgstage.se/') {
+			username = process.env.CYPRESS_TEST_EMAIL_MSB || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_MSB || 'your_msb_password';
+		} else {
+			throw new Error(`Unsupported baseURL: ${baseURL}`);
 		}
 
 		const authPage = new AuthPage(page);
