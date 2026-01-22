@@ -61,6 +61,14 @@ test.describe('Chat', () => {
 		await chatPage.verifyImageInResponse();
 	});
 
+	test('user can chat with anthropic/claude-3-haiku', async ({ page }) => {
+		await chatPage.selectModel('anthropic/claude-3-haiku', true);
+		await chatPage.sendMessage('What is the capital of France?');
+		await chatPage.waitForUserMessage();
+		await chatPage.waitForAssistantResponse();
+		await chatPage.verifyAssistantResponseContainsKeyword('Paris');
+	});
+
 	test('user can upload a PDF file and ask questions about it', async ({ page }) => {
 		test.setTimeout(120000); // Increase timeout to 2 minutes for file upload test
 
