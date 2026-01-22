@@ -11,8 +11,8 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	/* Opt out of parallel tests on CI. */
-	workers: process.env.CI ? 1 : undefined,
+	/* Let projects run in parallel, each with default workers */
+	// workers: 1, // Commented out to allow default per-project workers
 	/* Reporter to use. See https://playwright.dev/docs/test-reporters */
 	reporter: [
 		['html'],
@@ -38,13 +38,15 @@ export default defineConfig({
 	projects: [
 		{
 			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] }
+			use: { ...devices['Desktop Chrome'] },
+			workers: 1
 		},
 
 		/* Test against mobile viewports. */
 		{
 			name: 'Mobile Chrome',
-			use: { ...devices['Pixel 5'] }
+			use: { ...devices['Pixel 5'] },
+			workers: 1
 		},
 
 		{
@@ -52,15 +54,17 @@ export default defineConfig({
 			use: {
 				...devices['Desktop Chrome'],
 				baseURL: 'https://aihubi.tail22dc1.ts.net'
-			}
+			},
+			workers: 1
 		},
 
 		{
 			name: 'akabox',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://akabox.open-webui.dgstage.se'
-			}
+				baseURL: 'https://akabox.tail22dc1.ts.net'
+			},
+			workers: 1
 		},
 
 		{
@@ -68,7 +72,8 @@ export default defineConfig({
 			use: {
 				...devices['Desktop Chrome'],
 				baseURL: 'https://instance2.example.com'
-			}
+			},
+			workers: 1
 		},
 
 		{
@@ -76,7 +81,8 @@ export default defineConfig({
 			use: {
 				...devices['Desktop Chrome'],
 				baseURL: 'https://instance3.example.com'
-			}
+			},
+			workers: 1
 		}
 	],
 
