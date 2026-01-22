@@ -1,0 +1,5 @@
+This is a sample text document for testing file upload functionality in Open WebUI.
+
+Water is essential for life. It covers about 71% of Earth's surface and is crucial for all known forms of life. Without water, life as we know it would not exist.
+
+The water cycle involves evaporation, condensation, and precipitation. This continuous process ensures the distribution of water across the planet.
