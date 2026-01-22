@@ -218,6 +218,22 @@ export class ChatPage {
 		return this.page.getByRole('region', { name: 'Generation Info' });
 	}
 
+	async waitForImageGeneration() {
+		// Wait for the assistant response area to appear
+		await expect(this.page.locator('.chat-assistant')).toBeVisible({ timeout: 10000 });
+
+		// Wait for the image to appear in the response (similar to Cypress approach)
+		const image = this.page.locator('img[data-cy="image"]').first();
+		await expect(image).toBeVisible({ timeout: 120000 }); // Longer timeout for image generation
+
+		// Verify the image has a valid src attribute
+		await expect(image).toHaveAttribute('src');
+		await expect(image).not.toHaveAttribute('src', '');
+
+		// Additional wait for stability
+		await this.page.waitForTimeout(2000);
+	}
+
 	async verifyImageInResponse() {
 		const image = this.page.locator('.chat-assistant img[data-cy="image"]').last();
 		await expect(image).toBeVisible({ timeout: 60000 });
