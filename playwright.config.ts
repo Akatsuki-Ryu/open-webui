@@ -48,7 +48,7 @@ export default defineConfig({
 		},
 
 		{
-			name: 'ai-tail-test',
+			name: 'aihubi',
 			use: {
 				...devices['Desktop Chrome'],
 				baseURL: 'https://aihubi.tail22dc1.ts.net'
@@ -56,10 +56,10 @@ export default defineConfig({
 		},
 
 		{
-			name: 'instance1',
+			name: 'akabox',
 			use: {
 				...devices['Desktop Chrome'],
-				baseURL: 'https://instance1.example.com'
+				baseURL: 'https://akabox.open-webui.dgstage.se'
 			}
 		},
 
