@@ -23,11 +23,11 @@ test.describe('Chat', () => {
 		// Verify that the message was sent and user message appears
 		await chatPage.waitForUserMessage();
 
-		// Wait for assistant response to complete
-		await chatPage.waitForAssistantResponse();
+		// Wait for assistant text response to complete (simplified for text chat)
+		await chatPage.waitForAssistantTextResponse();
 
-		// Verify that the assistant response contains the keyword "water"
-		await chatPage.verifyAssistantResponseContainsKeyword('water');
+		// Verify that the assistant text response contains the keyword "water"
+		await chatPage.verifyAssistantTextResponseContainsKeyword('water');
 	});
 
 	// test('user can share chat', async ({ page }) => {
