@@ -12,7 +12,7 @@ export class ChatPage {
 		await this.selectModel('gpt-5-nano');
 	}
 
-	async selectModel(modelName: string, failIfNotFound = false) {
+	async selectModel(modelName: string, failIfNotFound = false): Promise<boolean> {
 		// Click on the model selector
 		await this.page.getByRole('button', { name: 'Select a model' }).click();
 
@@ -35,17 +35,12 @@ export class ChatPage {
 			if (failIfNotFound) {
 				throw new Error(`Model "${modelName}" not found after timeout`);
 			}
-			console.warn(`Model "${modelName}" not found after timeout - continuing test`);
-			// Fallback to selecting first available model
-			const firstItem = this.page.locator('button[data-value]').first();
-			if (firstItem) {
-				await firstItem.click();
-			}
-			return;
+			return false;
 		}
 
 		// Click the specific model
 		await targetItem.first().click();
+		return true;
 	}
 
 	async sendMessage(message: string) {
