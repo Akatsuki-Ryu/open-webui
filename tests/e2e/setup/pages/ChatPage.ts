@@ -6,6 +6,22 @@ export class ChatPage {
 
 	async goto() {
 		await this.page.goto('/');
+
+		// Wait for the page to load
+		await this.page.waitForTimeout(1000);
+
+		// Dismiss "What's New" modal if it appears
+		try {
+			const modal = this.page.getByRole('button', { name: "Okay, Let's Go!" });
+			if ((await modal.count()) > 0) {
+				await modal.click();
+				// Wait for modal to close
+				await this.page.waitForTimeout(500);
+			}
+		} catch (e) {
+			// Modal not found, continue with test
+			console.log('No "What\'s New" modal found - continuing with test');
+		}
 	}
 
 	async selectFirstModel() {
