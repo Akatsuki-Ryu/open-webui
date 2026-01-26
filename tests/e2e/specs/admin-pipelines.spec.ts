@@ -1,7 +1,24 @@
 import { test } from '../setup/fixtures';
 import { expect } from '@playwright/test';
+import { ChangelogModal } from '../setup/pages/ChangelogModal';
 
 test.describe('Admin Settings - Pipelines', () => {
+
+	test('user can dismiss changelog modal', async ({ adminPage }) => {
+		const changelogModal = new ChangelogModal(adminPage);
+
+		// Check if the changelog modal is visible
+		const isVisible = await changelogModal.isVisible();
+
+		// If it's visible, dismiss it
+		if (isVisible) {
+			await changelogModal.dismiss();
+		}
+
+		// Verify the modal is no longer visible
+		expect(await changelogModal.isVisible()).toBe(false);
+	});
+	
 	test('can access pipelines page', async ({ adminPage }) => {
 		// Navigate to the admin pipelines page
 		await adminPage.goto('/admin/settings/pipelines');
