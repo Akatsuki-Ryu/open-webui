@@ -108,8 +108,8 @@ export const test = base.extend<AuthFixtures>({
 			username = process.env.AI_TAIL_USERNAME || 'aka@aka.com';
 			password = process.env.AI_TAIL_PASSWORD || 'Ob3a4unnKAGvC6';
 		} else if (baseURL === 'https://akabox.open-webui.dgstage.se') {
-			username = process.env.INSTANCE1_USERNAME || 'admin@digitalist.cloud';
-			password = process.env.INSTANCE1_PASSWORD || 'your_preprod_password';
+			username = process.env.CYPRESS_TEST_EMAIL_AKABOXDOT || 'admin@digitalist.cloud';
+			password = process.env.CYPRESS_TEST_PASSWORD_AKABOXDOT || 'your_preprod_password';
 		} else if (baseURL === 'https://stage.open-webui.dgstage.se') {
 			username = process.env.CYPRESS_TEST_EMAIL_STAGE || 'admin@digitalist.cloud';
 			password = process.env.CYPRESS_TEST_PASSWORD_STAGE || 'your_stage_password';
