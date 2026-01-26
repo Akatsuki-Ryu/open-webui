@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import { ChangelogModal } from './ChangelogModal';
 
 export class ChatPage {
 	constructor(private page: Page) {}
@@ -11,17 +12,8 @@ export class ChatPage {
 		await this.page.waitForTimeout(1000);
 
 		// Dismiss "What's New" modal if it appears
-		try {
-			const modal = this.page.getByRole('button', { name: "Okay, Let's Go!" });
-			if ((await modal.count()) > 0) {
-				await modal.click();
-				// Wait for modal to close
-				await this.page.waitForTimeout(500);
-			}
-		} catch (e) {
-			// Modal not found, continue with test
-			console.log('No "What\'s New" modal found - continuing with test');
-		}
+		const changelogModal = new ChangelogModal(this.page);
+		await changelogModal.dismiss();
 	}
 
 	async selectFirstModel() {
